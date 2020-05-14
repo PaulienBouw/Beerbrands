@@ -13,7 +13,29 @@ function Homepage(beers) {
     const resetTypeClickHandler = () => {
         setTypeSelect("")
     };
-
+    const filterBeers = (beerList) => {
+        if (!searchValue && !countrySelect && !typeSelect) {
+            return beerList
+        }
+        return beerList.filter(
+            beerItem =>
+            //console.log(beerItem.country.displayName.includes(countrySelect))
+            searchValue && beerItem.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+            countrySelect && beerItem.country.displayName.includes(countrySelect) ||
+            typeSelect && beerItem.locationType.includes(typeSelect)
+        )
+    }
+    const createBeerItem = (item) => {
+        return (
+            <li key={item.id}>
+                        <h1>{item.name}</h1>
+                        <p>{item.country.displayName}</p>
+                        {item.brewery.images? <img src={item.brewery.images.icon} alt="logo brewery"/>: <p className="missingImg"></p>}
+                        <p>{item.locationType}</p>
+                        <p>founded in {item.brewery.established}</p>
+            </li>
+        )
+    }
 
     return (
         <article>
@@ -65,26 +87,8 @@ function Homepage(beers) {
                 </form>
                 <ul>
                 {console.log(beers.beers)}
-                {console.log(beers.beers[1].name)}
-                {beers.beers.filter(
-                                item =>
-                                    item.name.toLowerCase().includes(searchValue.toLowerCase())||
-                                    item.country.displayName.includes(countrySelect) ||
-                                    item.locationType.includes(typeSelect)
-                                    )
-                            
-                    .map(item=>(
-                        
-                        
-                        <li key={item.id}>
-                        <h1>{item.name}</h1>
-                        <p>{item.country.displayName}</p>
-                        {item.brewery.images? <img src={item.brewery.images.icon} alt="logo brewery"/>: <p className="missingImg"></p>}
-                        <p>{item.locationType}</p>
-                        <p>founded in {item.brewery.established}</p>
-                        </li>
-
-                    
+                {filterBeers(beers.beers)                           
+                    .map(item=>(createBeerItem(item)                                          
                     ))}
                 </ul>
         </article>
